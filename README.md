@@ -1,3 +1,24 @@
+# YoloV5 Knoweldge Distillation
+this repository is implementation of [Distilling Object Detectors with Fine-grained Feature Imitation](https://openaccess.thecvf.com/content_CVPR_2019/papers/Wang_Distilling_Object_Detectors_With_Fine-Grained_Feature_Imitation_CVPR_2019_paper.pdf)
+![distillation image](https://user-images.githubusercontent.com/40621030/143764188-2f397675-d518-484d-acb6-b98e1895afef.PNG)
+
+if you want to distill knoweldge of teacher model
+
+```bash
+$ python train.py --data coco.yaml --cfg yolov5s.yaml --weights '' --batch-size 64 --teacher_weight yolov5s.pt
+                                         yolov5m.yaml                           40                  yolov5m.pt
+                                         yolov5l.yaml                           24                  yolov5l.pt
+                                         yolov5x.yaml                           16                  yolov5x.pt
+```
+
+## Results
+| teacher | student | mAP@.5 | mAP@.5:.95 | precision | recall |
+|---------|---------|--------|------------|-----------|--------|
+|   None  | yolov5n | 0.405  | 0.237      | 0.525     | 0.39   |
+| yolov5m | yolov5n | 0.435  | 0.256      | 0.568     | 0.412  |
+
+---
+
 <div align="center">
   <p>
     <a href="https://yolovision.ultralytics.com/" target="_blank">
@@ -8,7 +29,8 @@
     -->
   </p>
 
-[中文](https://docs.ultralytics.com/zh/) | [한국어](https://docs.ultralytics.com/ko/) | [日本語](https://docs.ultralytics.com/ja/) | [Русский](https://docs.ultralytics.com/ru/) | [Deutsch](https://docs.ultralytics.com/de/) | [Français](https://docs.ultralytics.com/fr/) | [Español](https://docs.ultralytics.com/es/) | [Português](https://docs.ultralytics.com/pt/) | [हिन्दी](https://docs.ultralytics.com/hi/) | [العربية](https://docs.ultralytics.com/ar/)
+[English](README.md) | [简体中文](README.zh-CN.md)
+<br>
 
 <div>
     <a href="https://github.com/ultralytics/yolov5/actions/workflows/ci-testing.yml"><img src="https://github.com/ultralytics/yolov5/actions/workflows/ci-testing.yml/badge.svg" alt="YOLOv5 CI"></a>

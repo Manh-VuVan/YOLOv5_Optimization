@@ -88,6 +88,16 @@ class QFocalLoss(nn.Module):
             return loss
 
 
+def imitation_loss(teacher, student, mask):
+    if student is None or teacher is None:
+        return 0
+    # print(teacher.shape, student.shape, mask.shape)
+    diff = torch.pow(student - teacher, 2) * mask
+    diff = diff.sum() / mask.sum() / 2
+
+    return diff
+
+
 class ComputeLoss:
     sort_obj_iou = False
 
@@ -118,7 +128,7 @@ class ComputeLoss:
         self.anchors = m.anchors
         self.device = device
 
-    def __call__(self, p, targets):  # predictions, targets
+    def __call__(self, p, targets, teacher=None, student=None, mask=None):  # predictions, targets, model
         lcls = torch.zeros(1, device=self.device)  # class loss
         lbox = torch.zeros(1, device=self.device)  # box loss
         lobj = torch.zeros(1, device=self.device)  # object loss
@@ -172,7 +182,9 @@ class ComputeLoss:
         lcls *= self.hyp['cls']
         bs = tobj.shape[0]  # batch size
 
-        return (lbox + lobj + lcls) * bs, torch.cat((lbox, lobj, lcls)).detach()
+        lmask = imitation_loss(teacher, student, mask) * 0.01
+
+        return (lbox + lobj + lcls + lmask) * bs, torch.cat((lbox, lobj, lcls)).detach()
 
     def build_targets(self, p, targets):
         # Build targets for compute_loss(), input targets(image,class,x,y,w,h)
